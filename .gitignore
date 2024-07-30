@@ -1,0 +1,9 @@
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+
+# Ignore Pygame assets
+assets/
+
+# Ignore environment files
+.env
