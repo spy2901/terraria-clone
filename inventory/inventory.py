@@ -10,7 +10,7 @@ class Inventory:
 
         #create slots
         self.slots = []
-        for index in range(5):
+        for index in range(8):
             self.slots.append(Item())
         self.slots[0] = ShortSwordItem('short_sword',1)
         self.slots[1] = BlockItem('grass',5)

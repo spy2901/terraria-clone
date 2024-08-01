@@ -67,8 +67,8 @@ class Scene:
         return textures
     
 
-    def gen_world(self):
-        pass
+    # def gen_world(self):
+    #     pass
 
     def update(self):
         self.sprites.update()
