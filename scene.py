@@ -3,7 +3,7 @@ from globals import *
 from world.sprite import Entity, Mob
 from world.texturedata import solo_texture_data,atlas_texture_data
 from world.player import Player
-from opensimplex import OpenSimplex
+from opensimplex import OpenSimplex, noise3
 from camera import Camera
 from inventory.inventory import Inventory
 from world.items import *
@@ -71,9 +71,23 @@ class Scene:
     # def gen_world(self):
     #     pass
 
+    def draw_player_pos(self):
+        player_x = self.player.rect.x // TILESIZE # Replace with your player's x-coordinate
+        player_y = self.player.rect.y // TILESIZE # Replace with your player's y-coordinate
+        
+        location_text = f"Player Location: ({player_x}, {player_y})"
+
+        self.font = pygame.font.Font(None,30)
+
+        location_surface = self.font.render(location_text, True, "white")
+
+        self.app.screen.blit(location_surface, (10,10))
+
+
     def update(self):
         self.sprites.update()
         self.inventory.update()
+        self.draw_player_pos()
 
         player_chunk_pos = Chunk.get_chunk_pos(self.player.rect.center)
 
@@ -97,7 +111,7 @@ class Scene:
         for position in positions:
             if position not in self.active_chunks:
                 if position in self.chunks:
-                    self.chunks.load_chunk()
+                    self.chunks[position].load_chunk()
                     self.active_chunks[position] = self.chunks[position]
                 else:
                     self.chunks[position] = Chunk(position,self.group_list,self.textures)
@@ -133,12 +147,14 @@ class Chunk:
 
         self.blocks: list[Entity] = []
         
-        
 
         self.gen_chunk()
 
     def gen_chunk(self):
         noise_generator = OpenSimplex(seed=92392893)
+        cave_noise = OpenSimplex(seed=72392893)
+        tunnel_noise = OpenSimplex(seed=394857293)
+
 
         heightmap = []
         for y in range(Chunk.CHUNKSIZE * self.position[0],Chunk.CHUNKSIZE * self.position[0] + Chunk.CHUNKSIZE):
@@ -164,6 +180,26 @@ class Chunk:
 
                 if self.position[1] > 0:
                     block_type = 'stone'
+                
+                # Cave generation logic below the surface
+                if y < heightmap[x] - 5:
+                    cave_value = cave_noise.noise3(
+                        (x + self.position[0] * Chunk.CHUNKSIZE) * 0.1,
+                        (y + self.position[1] * Chunk.CHUNKSIZE) * 0.1,
+                        (self.position[0] + self.position[1]) * 0.1
+                    )
+                    tunnel_value = tunnel_noise.noise3(
+                        (x + self.position[0] * Chunk.CHUNKSIZE) * 0.05,
+                        (y + self.position[1] * Chunk.CHUNKSIZE) * 0.05,
+                        (self.position[0] + self.position[1]) * 0.05
+                    )
+
+                    # Determine if the point should be part of a cave
+                    if -0.2 < cave_value < 0.2 or -0.15 < tunnel_value < 0.15:
+                        continue  # Skip placing a block to create a cave/tunnel
+
+
+
 
                 # ORE GENERATION LOGIC
                 if block_type == 'stone':
@@ -188,7 +224,7 @@ class Chunk:
 
     def load_chunk(self):
         for block in self.blocks:
-            [self.group_list[group] for group in items[block.name].groups]
+            groups = [self.group_list[group] for group in items[block.name].groups]
             for group in groups:
                 group.add(block)
     def unload_chunk(self):

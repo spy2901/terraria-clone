@@ -53,19 +53,30 @@ class Inventory:
         # if EventHandler.clicked_any():
         #     self.debug()
     def draw(self):
-        pygame.draw.rect(self.screen, "gray", pygame.Rect(0,0,(TILESIZE*2)*len(self.slots),(TILESIZE*2)))
+        # Calculate the width and height of the drawing area
+        rect_width = (TILESIZE * 2) * len(self.slots)
+        rect_height = TILESIZE * 2
 
-        x_offset = TILESIZE/2
-        y_offset = TILESIZE/2
+        # Calculate the x and y coordinates for the drawing area
+        x_center = (SCREENWIDTH - rect_width) // 2
+        y_bottom = SCREENHEIGHT - rect_height
 
+        # Draw the main rectangle at the bottom center
+        pygame.draw.rect(self.screen, "gray", pygame.Rect(x_center, y_bottom, rect_width, rect_height))
+
+        x_offset = x_center + TILESIZE / 2
+        y_offset = y_bottom + TILESIZE / 2
+
+        # Draw the slots
         for i in range(len(self.slots)):
+            slot_rect = pygame.Rect(x_center + i * (TILESIZE * 2), y_bottom, TILESIZE * 2, TILESIZE * 2)
             if i == self.active_slot:
-                pygame.draw.rect(self.screen, "white", pygame.Rect(i*(TILESIZE*2),0,TILESIZE*2,TILESIZE*2))
-            pygame.draw.rect(self.screen,"black",pygame.Rect(i*(TILESIZE*2),0,TILESIZE*2,TILESIZE*2),2)
+                pygame.draw.rect(self.screen, "white", slot_rect)
+            pygame.draw.rect(self.screen, "black", slot_rect, 2)
             if self.slots[i].name != "default":
-                self.screen.blit(self.textures[self.slots[i].name],(x_offset+(TILESIZE*2)*i,y_offset))
+                self.screen.blit(self.textures[self.slots[i].name], (x_offset + (TILESIZE * 2) * i, y_offset))
+                amount_text = self.font.render(str(self.slots[i].quantity), True, "black")
+                self.screen.blit(amount_text, (x_offset + (TILESIZE * 2) * i, y_offset))
 
-                self.ammount_text = self.font.render(str(self.slots[i].quantity),True, "black")
-                self.screen.blit(self.ammount_text,(x_offset+ (TILESIZE*2)*i,y_offset))
-        pygame.draw.rect(self.screen, "black", pygame.Rect(0,0,(TILESIZE*2)*len(self.slots),(TILESIZE*2)),4)
-        
+        # Draw the border around the entire rectangle
+        pygame.draw.rect(self.screen, "black", pygame.Rect(x_center, y_bottom, rect_width, rect_height), 4)

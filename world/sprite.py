@@ -42,7 +42,7 @@ class Mob(Entity):
         if self.velocity.y > self.terminal_velocity:
             self.velocity.y = self.terminal_velocity
 
-        if abs(sqrt((self.rect.x - self.player.rect.x)**2 + (self.rect.y - self.player.rect.y)**2)) < TILESIZE*5:
+        if abs(sqrt((self.rect.x - self.player.rect.x)**2 + (self.rect.y - self.player.rect.y)**2)) < TILESIZE*10:
             # within range
             if self.rect.x > self.player.rect.x:
                 self.velocity.x = -self.speed
