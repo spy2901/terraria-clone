@@ -7,6 +7,7 @@ from opensimplex import OpenSimplex
 from camera import Camera
 from inventory.inventory import Inventory
 from world.items import *
+import random
 
 class Scene:
     def __init__(self,app) -> None:
@@ -47,7 +48,7 @@ class Scene:
         self.chunks: dict[tuple[int,int],Chunk] = {}
         self.active_chunks: dict[tuple[int,int],Chunk] = {}
 
-        self.gen_world()
+        # self.gen_world()
     def gen_solo_textures(self) -> dict:
         textures = {}
 
@@ -128,9 +129,12 @@ class Chunk:
         self.position = position
         self.group_list = group_list
         self.textures = textures
+      
 
         self.blocks: list[Entity] = []
         
+        
+
         self.gen_chunk()
 
     def gen_chunk(self):
@@ -160,6 +164,19 @@ class Chunk:
 
                 if self.position[1] > 0:
                     block_type = 'stone'
+
+                # ORE GENERATION LOGIC
+                if block_type == 'stone':
+                    if y > 3 and y < height_val-5:
+                        if random.random() < COALSPAWNCHANCE:
+                            block_type = 'coal'
+                    if y > 6 and y < height_val - 10:
+                        if random.random() < IRONSPAWNCHANCE:
+                            block_type = 'iron'
+                    if y > 9 and y < height_val - 14:
+                        if random.random() < GOLDSPAWNCHANCE:
+                            block_type = 'gold'
+
                 use_type = items[block_type].use_type
                 groups = [self.group_list[group] for group in items[block_type].groups]
                 self.blocks.append(use_type(groups,

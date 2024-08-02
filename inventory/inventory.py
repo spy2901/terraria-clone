@@ -44,14 +44,14 @@ class Inventory:
         if EventHandler.keydown(pygame.K_RIGHT): #moving right in slots
             if self.active_slot < len(self.slots)-1:
                 self.active_slot += 1
-            print (f'Active slot: {self.active_slot} ')
+            # print (f'Active slot: {self.active_slot} ')
         if EventHandler.keydown(pygame.K_LEFT): #moving left in slots
             if self.active_slot > 0:
                 self.active_slot -= 1
-            print (f'Active slot: {self.active_slot} ')
+            # print (f'Active slot: {self.active_slot} ')
             
-        if EventHandler.clicked_any():
-            self.debug()
+        # if EventHandler.clicked_any():
+        #     self.debug()
     def draw(self):
         pygame.draw.rect(self.screen, "gray", pygame.Rect(0,0,(TILESIZE*2)*len(self.slots),(TILESIZE*2)))
 

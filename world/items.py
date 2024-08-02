@@ -1,5 +1,6 @@
 from globals import *
 from world.sprite import *
+from random import randint
 
 class Item():
     def __init__(self, name:str = "default", quantity: int = 0) -> None:
@@ -42,8 +43,11 @@ class ItemData:
         self.item_type = item_type
 
 items: dict[str, ItemData] = {
-    'grass': ItemData('grass', item_type=BlockItem),
-    'dirt': ItemData('dirt', item_type=BlockItem),
-    'stone': ItemData('stone', item_type=BlockItem),
+    'grass': ItemData('grass', quantity=1,item_type=BlockItem),
+    'dirt': ItemData('dirt',quantity=1, item_type=BlockItem),
+    'stone': ItemData('stone',quantity=1, item_type=BlockItem),
+    'coal': ItemData('coal', quantity=randint(2,3),item_type=BlockItem),
+    'iron': ItemData('iron', quantity=randint(1,4),item_type=BlockItem),
+    'gold': ItemData('gold', quantity=randint(1,3),item_type=BlockItem),
     'short_sword': ItemData('short_sword', item_type=ShortSwordItem),
 }
