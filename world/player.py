@@ -1,7 +1,8 @@
 import pygame
 from globals import *
 from events import EventHandler
-from world.sprite import Entity
+from world.sprite import Entity,Mob
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups, image = pygame.Surface, position = tuple, parameters = dict)-> None:
@@ -121,4 +122,5 @@ class Player(pygame.sprite.Sprite):
         self.block_handling()
 
         if self.health <= 0:
+            Mob.stop_sound()
             self.kill()

@@ -34,8 +34,8 @@ class Scene:
         # Entity([self.sprites],position=(200,200),image=self.atlas_textures['stone'])
         
         
-
-        self.player = Player([self.sprites],self.textures['player_static'],(0,0),parameters={
+        spawn_x, spawn_y = TILESIZE * 1, TILESIZE * 1  # Example position
+        self.player = Player([self.sprites],self.textures['player_static'],(spawn_x,spawn_y),parameters={
                                                                                     'textures':self.textures,
                                                                                     'group_list':self.group_list,
                                                                                     'inventory': self.inventory,
@@ -72,8 +72,8 @@ class Scene:
     #     pass
 
     def draw_player_pos(self):
-        player_x = self.player.rect.x // TILESIZE # Replace with your player's x-coordinate
-        player_y = self.player.rect.y // TILESIZE # Replace with your player's y-coordinate
+        player_x = self.player.rect.x // TILESIZE 
+        player_y = self.player.rect.y // TILESIZE 
         
         location_text = f"Player Location: ({player_x}, {player_y})"
 
@@ -183,15 +183,14 @@ class Chunk:
                 
                 # Cave generation logic below the surface
                 if y < heightmap[x] - 5:
-                    cave_value = cave_noise.noise3(
+                    cave_value = cave_noise.noise2(
                         (x + self.position[0] * Chunk.CHUNKSIZE) * 0.1,
                         (y + self.position[1] * Chunk.CHUNKSIZE) * 0.1,
-                        (self.position[0] + self.position[1]) * 0.1
                     )
-                    tunnel_value = tunnel_noise.noise3(
+                    tunnel_value = tunnel_noise.noise2(
                         (x + self.position[0] * Chunk.CHUNKSIZE) * 0.05,
                         (y + self.position[1] * Chunk.CHUNKSIZE) * 0.05,
-                        (self.position[0] + self.position[1]) * 0.05
+                        
                     )
 
                     # Determine if the point should be part of a cave
@@ -230,6 +229,7 @@ class Chunk:
     def unload_chunk(self):
         for block in self.blocks:
             block.kill()    
+    
     
     
     @staticmethod

@@ -1,4 +1,5 @@
 import pygame
+from pygame import mixer
 from globals import *
 from globals import TILESIZE
 from math import sqrt
@@ -14,6 +15,11 @@ class Entity(pygame.sprite.Sprite):
         pass
 
 class Mob(Entity):
+    
+    mixer.init()
+    attack_sound = pygame.mixer.Sound('res/sound/malehurteffect.mp3')
+    attack_sound.set_volume(0.5)
+    
     def __init__(self, groups, image=pygame.Surface((TILESIZE, TILESIZE)), position=(0, 0),parameters = {}):
         super().__init__(groups, image, position)
 
@@ -26,6 +32,8 @@ class Mob(Entity):
         self.mass = 5
         self.speed = 0.5
         self.terminal_velocity = TERMINALVELOCITY * self.mass
+        
+        #sounds
 
         #states
         self.attacking = True
@@ -35,6 +43,9 @@ class Mob(Entity):
         # cooldowns
         self.attack_cooldown = 60
         self.counter = self.attack_cooldown
+
+    def play_sound(self, sound):
+        sound.play()
 
     def move(self):
         self.velocity.y += GRAVITY * self.mass
@@ -86,9 +97,15 @@ class Mob(Entity):
                 self.grounded = False
 
     def check_player_collison(self):
+        if self.player.health <= 0:
+            Mob.attack_sound.stop()
+             
+
         if self.attacking and not self.attacked:
             if self.rect.colliderect(self.player.rect):
+                
                 self.player.health -= self.damage
+                self.play_sound(Mob.attack_sound)
                 self.attacked = True
                 self.counter  = self.attack_cooldown
 
@@ -97,6 +114,8 @@ class Mob(Entity):
                     self.player.velocity.x = 3
                 elif self.player.rect.centerx < self.rect.centerx:
                     self.player.velocity.x = -3
+                
+                
 
     def update(self):
         self.move()
@@ -107,3 +126,7 @@ class Mob(Entity):
             if self.counter < 0:
                 self.counter = self.attack_cooldown 
                 self.attacked  = False
+
+    @staticmethod
+    def stop_sound():
+        Mob.attack_sound.stop()
