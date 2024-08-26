@@ -7,3 +7,6 @@ assets/
 
 # Ignore environment files
 .env
+
+#ignore vscode files
+.vscode

@@ -3,7 +3,7 @@ from globals import *
 from world.sprite import Entity, Mob
 from world.texturedata import solo_texture_data,atlas_texture_data
 from world.player import Player
-from opensimplex import OpenSimplex, noise3
+from opensimplex import OpenSimplex
 from camera import Camera
 from inventory.inventory import Inventory
 from world.items import *
@@ -30,11 +30,16 @@ class Scene:
         #inventory
         self.inventory = Inventory(self.app,self.textures)
 
+        # day/night cycle
+        self.time_of_day = 0.0  # A value between 0.0 and 1.0
+        self.day_length = 3600  # Number of frames per full day-night cycle (adjust as needed)
+
+
         self.entity = Entity([self.sprites],image=self.textures['grass'])
         # Entity([self.sprites],position=(200,200),image=self.atlas_textures['stone'])
         
         
-        spawn_x, spawn_y = TILESIZE * 1, TILESIZE * 1  # Example position
+        spawn_x, spawn_y = TILESIZE * 1, TILESIZE * 1  
         self.player = Player([self.sprites],self.textures['player_static'],(spawn_x,spawn_y),parameters={
                                                                                     'textures':self.textures,
                                                                                     'group_list':self.group_list,
@@ -74,7 +79,6 @@ class Scene:
     def draw_player_pos(self):
         player_x = self.player.rect.x // TILESIZE 
         player_y = self.player.rect.y // TILESIZE 
-        
         location_text = f"Player Location: ({player_x}, {player_y})"
 
         self.font = pygame.font.Font(None,30)
@@ -125,10 +129,49 @@ class Scene:
         if target:
             self.active_chunks[target].unload_chunk()
             self.active_chunks.pop(target)
+
+         # Update time of day
+        self.time_of_day += 1 / self.day_length
+        if self.time_of_day > 1.0:
+            self.time_of_day = 0.0
+
+        # Simulate day/night by adjusting the screen tint
+        self.update_day_night_cycle()
+
+    def update_day_night_cycle(self):
+        # Adjust the tint based on the time of day
+        min_brightness = 0.2  # Minimum brightness at night, ensure it's not completely dark
+        if self.time_of_day < 0.5:
+            # Daytime (0.0 to 0.5)
+            brightness = 1.0 - 0.5 * abs(0.5 - self.time_of_day) / 0.5
+        else:
+            # Nighttime (0.5 to 1.0)
+            brightness = 0.5 - 0.5 * abs(0.5 - self.time_of_day) / 0.5
+
+        # Adjust brightness to ensure it doesn't go below min_brightness
+        brightness = max(brightness, min_brightness)
+
+        # Apply brightness to the screen color
+        tint = pygame.Surface(self.app.screen.get_size())
+        tint.fill((0, 0, 0))
+        tint.set_alpha(int((1.0 - brightness) * 255))
+        self.app.screen.blit(tint, (0, 0))
+
+    def draw_time(self):
+        # Display the current time on the top-right corner
+        hours = int(self.time_of_day * 24)
+        minutes = int((self.time_of_day * 24 - hours) * 60)
+        time_text = f"Time: {hours:02}:{minutes:02}"
+
+        self.font = pygame.font.Font(None, 30)
+        time_surface = self.font.render(time_text, True, "white")
+        self.app.screen.blit(time_surface, (self.app.screen.get_width() - time_surface.get_width() - 10, 10))
+
     def draw(self):
         self.app.screen.fill('skyblue')
         self.sprites.draw(self.player,self.app.screen)
         self.inventory.draw()
+        self.draw_time()
 
 class Chunk:
     CHUNKSIZE = 30

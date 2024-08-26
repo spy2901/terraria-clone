@@ -4,30 +4,51 @@ import sys
 from globals import *
 from scene import Scene
 from events import EventHandler
-0
+from MainMenu.MainMenu import MainMenu
+
+
 class Game:
     def __init__(self):
         pygame.init()
         mixer.init()
         pygame.display.set_caption('TERRARIA CLONE')
         self.screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
-        
+
         self.clock = pygame.time.Clock()
-        # self.music = mixer.Sound('res/sound/music/bg25.wav')
-        # self.music.set_volume(0.05)
         self.running = True
 
-        self.scene = Scene(self)
+        # State management
+        self.state = "menu"
+        self.scene = None
+        self.main_menu = MainMenu(self)
+
     def run(self):
         mixer.music.load('res/sound/music/bg25.wav')
         mixer.music.play()
         mixer.music.set_volume(0.1)
         while self.running:
-            # self.music.play(-1)
+            if self.state == "menu":
+                self.run_menu()
+            elif self.state == "game":
+                self.run_game()
+        self.close()
 
+    def run_game(self):
+        while self.running and self.state == "game":
             self.update()
             self.draw()
-        self.close()
+        self.state = "menu"
+
+    def run_menu(self):
+        self.main_menu.running = True
+        while self.main_menu.running:
+            self.main_menu.handle_events()
+            self.main_menu.update()
+            self.main_menu.draw()
+            self.clock.tick(FPS)
+        self.state = "game"
+        self.scene = Scene(self)
+
     def update(self):
         EventHandler.poll_events()
         for event in EventHandler.events:
@@ -36,14 +57,17 @@ class Game:
 
         self.scene.update()
 
-        pygame.display.update() 
+        pygame.display.update()
         self.clock.tick(FPS)
+
     def draw(self):
         self.scene.draw()
+
     def close(self):
         pygame.quit()
         sys.exit()
 
+
 if __name__ == "__main__":
     game = Game()
-    game.run() 
+    game.run()
