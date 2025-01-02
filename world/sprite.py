@@ -27,7 +27,7 @@ class Mob(Entity):
             self.block_group = parameters['block_group']
             self.player = parameters['player']
             self.damage = parameters['damage']
-        
+            # self.health = parameters['health']
         self.velocity = pygame.math.Vector2()
         self.mass = 5
         self.speed = 0.5

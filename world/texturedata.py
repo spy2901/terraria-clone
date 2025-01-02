@@ -9,10 +9,15 @@ atlas_texture_data = {
     'coal': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(2,1)},
     'gold': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(3,2)},
     'iron': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(2,3)},
+
+    'wooden_pickaxe': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(0,2)},
+    'stone_pickaxe': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(1,2)},
+    'iron_pickaxe': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(0,3)},
+    'gold_pickaxe': {'type': 'block','size': (TILESIZE, TILESIZE),'position':(1,3)},
 }
 
 solo_texture_data = {
-    'player_static':{'type':'player','file_path':'res/player.png','size':(TILESIZE*2,TILESIZE*2)},
-    'zombie_static':{'type':'enemy','file_path':'res/zombie.png','size':(TILESIZE*2,TILESIZE*2)},
+    'player_static':{'type':'player','file_path':'res/player.png','size':(TILESIZE*1,TILESIZE*1.5)},
+    'zombie_static':{'type':'enemy','file_path':'res/zombie.png','size':(TILESIZE*1,TILESIZE*1.5)},
     'short_sword':{'type':'weapon','file_path':'res/weapons/shortsword.png','size':(TILESIZE,TILESIZE)},
 }   

@@ -1,12 +1,12 @@
 import pygame
 class EventHandler:
-    def __init__() -> None:
+    def __init__(self) -> None:
         EventHandler.events = pygame.event.get()
-    def poll_events():
+    def poll_events(self):
         EventHandler.events = pygame.event.get()
     def keydown (key) :
         for event in EventHandler.events:
-            if event.type == pygame. KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 if event.key ==key:
                      return True
         return False
@@ -16,7 +16,7 @@ class EventHandler:
                 if event.button == leftright: # left click
                     return True
         return False
-    def clicked_any() -> bool:
+    def clicked_any(self) -> bool:
         for event in EventHandler.events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                     return True

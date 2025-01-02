@@ -34,6 +34,18 @@ class ShortSwordItem(Item):
     def attack(self, player, target):
         target.kill()
 
+
+class PickaxeItem(Item):
+    def __init__(self, name: str = "default", quantity: int = 0) -> None:
+        super().__init__(name, quantity)
+
+    def use(self, player, position: tuple):
+        print('using pickaxe')
+
+    def attack(self, player, target):
+        target.kill()
+
+
 class ItemData:
     def __init__(self,name:str,quantity: int = 1, groups: list[str] = ['sprites', 'block_group'],use_type: Entity = Entity, item_type: Item = Item) -> None:
         self.name = name
@@ -47,7 +59,13 @@ items: dict[str, ItemData] = {
     'dirt': ItemData('dirt',quantity=1, item_type=BlockItem),
     'stone': ItemData('stone',quantity=1, item_type=BlockItem),
     'coal': ItemData('coal', quantity=randint(2,3),item_type=BlockItem),
-    'iron': ItemData('iron', quantity=randint(1,4),item_type=BlockItem),
     'gold': ItemData('gold', quantity=randint(1,3),item_type=BlockItem),
+    'iron': ItemData('iron', quantity=randint(1,4),item_type=BlockItem),
+    'wood': ItemData('iron', quantity=1,item_type=BlockItem),
+    'leaf': ItemData('iron', quantity=1,item_type=BlockItem),
     'short_sword': ItemData('short_sword', item_type=ShortSwordItem),
+    'wooden_pickaxe': ItemData('wooden_pickaxe', item_type=ShortSwordItem),
+    'stone_pickaxe': ItemData('wooden_pickaxe', item_type=ShortSwordItem),
+    'iron_pickaxe': ItemData('wooden_pickaxe', item_type=ShortSwordItem),
+    'gold_pickaxe': ItemData('wooden_pickaxe', item_type=ShortSwordItem),
 }
